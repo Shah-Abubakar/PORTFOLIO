@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Cosmic Venture | Beyond the Sky</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Barlow:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      overflow-x: hidden;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .liquid-glass {
+      background: rgba(255, 255, 255, 0.01);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: none;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .liquid-glass::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+      background: linear-gradient(180deg,
+          rgba(255, 255, 255, 0.45) 0%,
+          rgba(255, 255, 255, 0.15) 20%,
+          rgba(255, 255, 255, 0) 40%,
+          rgba(255, 255, 255, 0) 60%,
+          rgba(255, 255, 255, 0.15) 80%,
+          rgba(255, 255, 255, 0.45) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .liquid-glass-strong {
+      background: rgba(255, 255, 255, 0.01);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(50px);
+      -webkit-backdrop-filter: blur(50px);
+      box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .liquid-glass-strong::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+      background: linear-gradient(180deg,
+          rgba(255, 255, 255, 0.5) 0%,
+          rgba(255, 255, 255, 0.2) 20%,
+          rgba(255, 255, 255, 0) 40%,
+          rgba(255, 255, 255, 0) 60%,
+          rgba(255, 255, 255, 0.2) 80%,
+          rgba(255, 255, 255, 0.5) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // Icons
+    const ArrowUpRight = ({ className = "h-5 w-5" }) => (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+        <path d="M7 17L17 7" /><path d="M7 7h10v10" />
+      </svg>
+    );
+
+    const ImageIcon = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21H5Zm1-4h12l-3.75-5-3 4L9 13l-3 4Z" />
+      </svg>
+    );
+
+    const MovieIcon = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M4 6.47L5.76 10H20v8H4V6.47M22 4h-4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4z" />
+      </svg>
+    );
+
+    const LightIcon = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z" />
+      </svg>
+    );
+
+    // Navbar Component
+    const Navbar = () => {
+      const [active, setActive] = React.useState("Home");
+
+      const menuItems = [
+        { name: "Home", href: "#", sectionId: "home" },
+        { name: "About me", href: "#capabilities", sectionId: "capabilities" },
+        { name: "Skills", href: "#", sectionId: "skills" },
+        { name: "Projects", href: "#", sectionId: "projects" },
+        { name: "Contact", href: "#", sectionId: "contact" }
+      ];
+
+      // Add IDs to sections
+      React.useEffect(() => {
+        // Add id to Hero section
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) heroSection.id = 'home';
+      }, []);
+
+      // Detect scroll and update active menu
+      React.useEffect(() => {
+        const handleScroll = () => {
+          const sections = menuItems.map(item => document.getElementById(item.sectionId)).filter(Boolean);
+
+          for (let i = sections.length - 1; i >= 0; i--) {
+            const section = sections[i];
+            const rect = section.getBoundingClientRect();
+            if (rect.top <= 100) {
+              const menuItem = menuItems.find(item => item.sectionId === section.id);
+              if (menuItem) setActive(menuItem.name);
+              break;
+            }
+          }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Initial check
+
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+
+      const handleClick = (e, item) => {
+        e.preventDefault();
+        setActive(item.name);
+
+        if (item.sectionId === "home") {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+          const element = document.getElementById(item.sectionId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      };
+
+      return (
+        <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-auto z-50 px-6">
+          <div className="flex items-center gap-1 liquid-glass-strong rounded-full px-4 py-2 backdrop-blur-xl bg-white/5">
+            {menuItems.map((item) => (
+              <div key={item.name} className="relative px-5 py-2.5">
+                <a
+                  href={item.href}
+                  onClick={(e) => handleClick(e, item)}
+                  className={`text-sm font-medium transition-all duration-300 ${active === item.name
+                      ? "text-white"
+                      : "text-white/70 hover:text-white"
+                    }`}
+                  style={{ fontFamily: "'Barlow', sans-serif" }}
+                >
+                  {item.name}
+                </a>
+                {active === item.name && (
+                  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 bg-white rounded-full" style={{ width: "60%", minWidth: "30px" }} />
+                )}
+              </div>
+            ))}
+          </div>
+        </nav>
+      );
+    };
+
+    // Hero Section - Only Menu, No Text Content
+    const Hero = () => {
+      return (
+        <section id="home" className="relative h-screen w-full overflow-hidden bg-black">
+          {/* Background Video */}
+          <video
+            src="Video1.mp4"
+            autoPlay
+            muted
+            playsInline
+            loop
+            className="absolute left-1/2 top-0 -translate-x-1/2 object-cover object-center z-0"
+            style={{ width: "120%", height: "100%", objectPosition: "center", opacity: 1 }}
+          />
+          <div className="relative z-10 h-full flex flex-col">
+            <Navbar />
+            {/* No text content - just empty area */}
+            <div className="flex-1"></div>
+          </div>
+        </section>
+      );
+    };
+
+    // Capabilities Section
+    const Capabilities = () => {
+      const cardsData = [
+        {
+          tags: [""],
+          title: "About me",
+          desc: "I’m Abubakar, an 18 year old student from Mumbai, India with a strong interest in Artificial Intelligence, Machine Learning, and technology. I enjoy building projects, learning new skills, and exploring how modern technology works behind the scenes. I spend most of my time improving my development skills, designing ideas, and working on educational and AI-related projects. "
+        },
+        {
+          tags: ["Ray Tracing", "Physical Shadows", "Studio Quality", "Sunlight Sync"],
+          title: "My vision",
+          desc: "My vision is to build AI-powered real world projects that solve practical problems and improve everyday life. I want to work on technologies that go beyond simple applications, systems that can actually assist businesses, students, and people through automation and intelligent decision-making. "
+        }
+      ];
+
+      return (
+        <section id="capabilities" className="relative h-screen w-full overflow-hidden bg-black" style={{ zIndex: 1 }}>
+          {/* Background Video 2 */}
+          <video
+            src="Video2.mp4"
+            autoPlay
+            muted
+            playsInline
+            loop
+            className="absolute left-0 top-1/2 -translate-y-1/2 object-cover z-0"
+            style={{ width: "170%", height: "170%", objectPosition: "centre center", opacity: 1 }}
+          />
+          <div className="relative z-20 px-8 md:px-16 lg:px-20 pt-8 pb-8 flex flex-col h-full">
+            {/* Right side transparent boxes - enlarged */}
+            <div className="flex flex-col gap-8 max-w-4xl ml-auto relative z-30">
+              {cardsData.map((card, idx) => (
+                <div
+                  key={idx}
+                  className="liquid-glass rounded-[1.25rem] p-8 min-h-[275px] z-50"
+                  style={{
+                    background: 'rgba(0,0,0,0.4)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  <div className="hidden">
+                    {card.tags.map((tag, i) => (
+                      <span key={i} className="liquid-glass rounded-full px-4 py-1.5 text-sm text-white/90 whitespace-nowrap" style={{ fontFamily: "'Barlow', sans-serif" }}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <h3 className="text-4xl md:text-5xl tracking-[-1px] leading-none mb-4" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', color: 'white' }}>
+                    {card.title}
+                  </h3>
+                  <p className="text-base text-white/90 leading-relaxed max-w-lg" style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 300 }}>
+                    {card.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    // Hls Video Component
+    const HlsVideo = ({ src, className, style }) => {
+      const videoRef = React.useRef(null);
+
+      React.useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (window.Hls && window.Hls.isSupported()) {
+          const hls = new window.Hls();
+          hls.loadSource(src);
+          hls.attachMedia(video);
+          hls.on(window.Hls.Events.MANIFEST_PARSED, () => {
+            video.play().catch(e => console.log("Auto-play prevented", e));
+          });
+          return () => {
+            hls.destroy();
+          };
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = src;
+          video.addEventListener('loadedmetadata', () => {
+            video.play().catch(e => console.log("Auto-play prevented", e));
+          });
+        }
+      }, [src]);
+
+      return (
+        <video
+          ref={videoRef}
+          className={className}
+          style={style}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+      );
+    };
+
+       // Skills Section
+    const Skills = () => {
+      const skillCategories = [
+        {
+          title: "App Development",
+          paragraph: "I started building web-based projects using no-code AI tools, which helped me understand how applications are structured and how user-focused systems are designed. While creating my educational platform, I worked on features like progress tracking, chapter management, and study workflows, which introduced me to concepts such as databases, application logic, and structured data systems. As I continued building projects, I became interested in understanding how these systems work through code, and I am currently learning frontend, backend, and modern web development concepts more deeply."},
+        {
+          title: "AI  Tools",
+          paragraph: "Since 2023, I have been actively exploring different AI tools and how they can be used to improve creativity & productivity. I started by experimenting with AI image generation, video generation, and no-code AI development tools, which helped me understand how modern AI technologies can be applied in practical projects and workflows. I realised that students have AI but they don't know how to use it effectively to get more productive, so I building an educational platform to solve that exact problem. "
+        },
+        {
+          title: "Practical Thinking",
+          paragraph: "While building my educational platform, I focused heavily on understanding the real problems students face during studies, such as lack of planning, inconsistent revision, syllabus management, and confusion about where to start. Instead of creating a simple learning app, I tried to design systems that could actually help students stay organized, track progress, and study more efficiently in practical situations."
+        },
+        {
+          title: "Automation",
+          paragraph: "While exploring practical AI applications, I got to know about automation tools like n8n and how AI workflows can be used in real businesses, but unlike AI tools, I am very basic in this. One idea I explored was creating an AI receptionist system for local clinics that could handle appointments and provide doctor schedule information to patients automatically. I recently started learning automation workflows and I experimented with building some basic systems to understand how these technologies work together. Although some of my early attempts were unsuccessful, they helped me better understand real-world AI automation systems and motivated me to continue learning more about this field."
+        }
+      ];
+
+      return (
+        <section id="skills" className="relative min-h-screen w-full flex items-center justify-center bg-black py-24 overflow-hidden" style={{ zIndex: 1 }}>
+          <div className="absolute inset-0 z-0">
+            <HlsVideo
+              src="https://stream.mux.com/8wrHPCX2dC3msyYU9ObwqNdm00u3ViXvOSHUMRYSEe5Q.m3u8"
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-cover w-full h-full"
+              style={{ minWidth: "100%", minHeight: "100%", opacity: 0.6 }}
+            />
+            <div className="absolute inset-0 bg-black/60"></div>
+          </div>
+
+          <div className="relative z-10 w-full max-w-7xl px-8 md:px-16 mx-auto">
+            <div className="mb-20 text-center">
+              <h2 className="text-5xl md:text-7xl tracking-[-2px] leading-none mb-6" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', color: 'white' }}>
+                My Skills
+              </h2>
+              <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto" style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 300 }}>
+                A comprehensive overview of my technical proficiency, spanning from artificial intelligence algorithms to modern full-stack web development.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              {skillCategories.map((category, idx) => (
+                <div
+                  key={idx}
+                  className="liquid-glass rounded-[2rem] p-8 md:p-12 transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(255,255,255,0.05)] group"
+                  style={{ background: 'rgba(25,25,25,0.3)' }}
+                >
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-0.5 bg-white/20 group-hover:bg-white/60 transition-colors duration-500"></div>
+                    <h3 className="text-3xl md:text-4xl tracking-[-1px]" style={{ fontFamily: "'Instrument Serif', serif", color: 'white' }}>
+                      {category.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-white/70 leading-relaxed text-sm md:text-base" style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 300, lineHeight: 1.6 }}>
+                    {category.paragraph}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+   // Projects Section
+const Projects = () => {
+  const [expandedStates, setExpandedStates] = React.useState({});
+  
+  const projectData = [
+    {
+      id: "kaizen",
+      name: "KAIZEN",
+      image: "Logo1.png",
+      link: "LINK1",
+      isComingSoon: false,
+      paragraphs: [
+        "PROJECT KAIZEN is an educational platform designed to help students manage their studies in a more structured and efficient way. The application provides chapter-wise and subject-wise learning systems, syllabus progress tracking, revision management, and smart study planning features to help students stay consistent during long-term preparation.",
+        "The platform also includes an AI-based guidance system focused on helping students create better study strategies and productivity plans according to their situations. While building this project, I focused heavily on understanding real student problems such as lack of planning, inconsistency, and syllabus management, and designed the system to provide a cleaner and more organized learning experience.",
+        "This project was initially developed using AI-assisted and no-code development workflows, which also helped me gradually understand application structure, workflows, frontend systems, and practical software development concepts while continuously improving the platform."
+      ]
+    },
+    {
+      id: "nextstep",
+      name: "NextSTEP",
+      image: "NS1.png",
+      link: "LINK2",
+      isComingSoon: false,
+      paragraphs: [
+        "NextStep is an academic and career guidance platform built to help Indian students figure out their next steps with total clarity. It brings together everything a student needs—like national and international scholarships, career options, entrance exam details, and top college lists—all in one simple, easy-to-use place. I actually made this project about 1.5 years ago, and it serves as the earlier version of what has now evolved into Project Kaizen. It’s designed to save students from endless searching by giving them a clear path, helpful AI study tools, and a better way to look for future opportunities. I have stopped working on it for now."
+      ]
+    },
+    {
+      id: "hireme",
+      name: "Hire me",
+      image: "Hire-me.png",
+      link: "https://id-preview--757d5f2e-83c4-4f3c-a499-dbe846e2fe83.lovable.app/",
+      isComingSoon: false,
+      paragraphs: [
+        "HIRE ME is a personal portfolio website I originally built to launch my freelancing work on Fiverr. It’s designed as a clean, impactful space to showcase creative ideas, disciplined strategy, and what I can bring to the table as a student with big ambitions. The whole project is about curiosity-driven exploration—taking a simple question and turning it into a real, innovative outcome through deep research and solid design execution. Even though I didn't end up uploading it because I shifted my focus to working on Project Kaizen, it stands as a major piece of my project history and design journey."
+      ]
+    },
+    {
+      id: "appointmentbot",
+      name: "Appointment bot",
+      image: "ComingSoon.png",
+      isComingSoon: true,
+      paragraphs: [
+        "An intelligent AI-powered receptionist designed for local clinics to automate appointment scheduling and manage patient inquiries. Currently under active development, this project explores automated workflows using tools like n8n and LLM agents to provide a seamless scheduling experience.",
+        "Although still in progress, the bot aims to handle patient booking requests, send reminders, and answer common questions about doctor schedules, reducing administrative overhead for healthcare staff."
+      ]
+    }
+  ];
+
+  const toggleExpand = (id) => {
+    setExpandedStates(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
+  return (
+    <section id="projects" className="relative min-h-screen w-full flex items-center justify-center bg-black py-24 overflow-hidden" style={{ zIndex: 1 }}>
+      {/* Background Video */}
+<video
+  src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260429_115139_0fc6bd3d-3631-4d26-ab9b-28293887dcc9.mp4"
+  autoPlay
+  muted
+  playsInline
+  loop
+  className="absolute inset-0 w-full h-full object-cover z-0"
+  style={{ opacity: 0.5 }}
+/>
+{/* Dark overlay for better text readability */}
+<div className="absolute inset-0 z-0 bg-black/60"></div>
+
+      <div className="relative z-10 w-full max-w-7xl px-8 md:px-16 mx-auto">
+        <div className="mb-20 text-center">
+          <h2 className="text-5xl md:text-7xl tracking-[-2px] leading-none mb-6" style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', color: 'white' }}>
+            Projects
+          </h2>
+          <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto" style={{ fontFamily: "'Barlow', sans-serif", fontWeight: 300 }}>
+            A showcase of my recent work, ranging from habit trackers and learning platforms to AI integrations and automations.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          {projectData.map((project, idx) => {
+            const fullText = project.paragraphs.join(' ');
+            const previewText = fullText.slice(0, 150) + '...';
+            const isExpanded = expandedStates[project.id] || false;
+            
+            return (
+              <div
+                key={idx}
+                className="liquid-glass rounded-[2rem] p-6 md:p-8 transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_0_50px_rgba(255,255,255,0.03)] flex flex-col justify-between"
+                style={{ background: 'rgba(15,15,15,0.2)' }}
+              >
+                <div>
+                  {/* Image */}
+                  {!project.isComingSoon ? (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block overflow-hidden rounded-[1.5rem] aspect-[16/10] bg-zinc-900 border border-white/10 relative group mb-6 cursor-pointer transition-all duration-500 hover:border-white/20"
+                    >
+                      <img
+                        src={project.image}
+                        alt={project.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 flex items-center justify-center">
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-2">
+                          <span className="text-white text-xs font-medium tracking-wider">Visit Project</span>
+                          <ArrowUpRight className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+                    </a>
+                  ) : (
+                    <div className="block overflow-hidden rounded-[1.5rem] aspect-[16/10] bg-zinc-900 border border-white/10 relative mb-6 opacity-60 grayscale cursor-default">
+                      <img
+                        src={project.image}
+                        alt={project.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+                          <span className="text-white text-xs font-medium tracking-wider">Coming Soon</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Title */}
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-8 h-0.5 bg-white/20"></div>
+                    <h3 className="text-3xl md:text-4xl tracking-[-1px]" style={{ fontFamily: "'Instrument Serif', serif", color: 'white' }}>
+                      {project.name}
+                    </h3>
+                  </div>
+
+                  {/* Description with See More/See Less */}
+                  <div className="text-white/70 leading-relaxed text-sm md:text-base font-light" style={{ fontFamily: "'Barlow', sans-serif", lineHeight: 1.6 }}>
+                    <p>{isExpanded ? fullText : previewText}</p>
+                    {fullText.length > 150 && (
+                      <button
+                        onClick={() => toggleExpand(project.id)}
+                        className="text-white hover:text-white/70 text-xs font-semibold tracking-wider uppercase mt-3 transition-colors duration-300 flex items-center gap-1"
+                      >
+                        {isExpanded ? 'See less' : 'See more'}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`h-3 w-3 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer Link */}
+                <div className="mt-8 pt-4 border-t border-white/5 flex justify-between items-center">
+                  {!project.isComingSoon ? (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/60 hover:text-white text-xs font-semibold tracking-widest uppercase transition-colors duration-300 flex items-center gap-2"
+                      style={{ fontFamily: "'Barlow', sans-serif" }}
+                    >
+                      View Project
+                      <ArrowUpRight className="h-3.5 w-3.5" />
+                    </a>
+                  ) : (
+                    <span className="text-white/30 text-xs font-semibold tracking-widest uppercase" style={{ fontFamily: "'Barlow', sans-serif" }}>
+                      Coming Soon
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+    // CSS animation keyframes (removed fade effect)
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = ``;
+    document.head.appendChild(styleSheet);
+
+    // App Component
+    const App = () => {
+      return (
+        <div className="bg-black">
+          <Hero />
+          <Capabilities />
+          <Skills />
+          <Projects />
+        </div>
+      );
+    };
+
+    // Mount the app
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+
+</html>
