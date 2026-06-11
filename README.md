@@ -2,7 +2,7 @@
 
 ** [View Live Demo](https://real-portfolio-vkzy.vercel.app)**
 
-My personal portfolio website — a cinematic, scroll-driven experience showcasing my projects, skills, and vision as a CS/AI aspirant.
+My personal portfolio website — a cinematic, scroll-driven experience showcasing my projects, skills, and vision as an AI aspirant.
 
 ---
 
@@ -11,8 +11,8 @@ My personal portfolio website — a cinematic, scroll-driven experience showcasi
 | Aspect | Details |
 |--------|---------|
 | **Purpose** | Central hub for my work — projects, skills, contact |
-| **Target Audience** | University admissions, potential collaborators, employers |
-| **Style** | Modern, cinematic, glass-morphism, scroll-driven video |
+| **Target Audience** | University admissions |
+| **Style** | Modern, cinematic, glass style, scroll-driven video |
 
 ---
 
