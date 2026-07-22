@@ -1067,9 +1067,10 @@
       };
       const menuItems = [
         { name: "Home", sectionId: "home" },
-        { name: "About", sectionId: "capabilities" },
+        { name: "Myself", sectionId: "capabilities" },
         { name: "Skills", sectionId: "skills" },
         { name: "Projects", sectionId: "projects" },
+
         { name: "Contact", sectionId: "contact" }
       ];
       return (
@@ -1104,7 +1105,7 @@
         );
 
       return (
-        <div className="hero-title">
+        <div className="hero-title" style={{ position: 'relative' }}>
           <div className="hero-line">{renderWord('SHAH')}</div>
           <div className="hero-line">{renderWord('ABUBAKAR')}</div>
           <div className="decorative-line" />
@@ -1313,6 +1314,9 @@
       return (
         <section id="home" className="relative h-screen w-full overflow-hidden flex items-center px-8 md:px-16 lg:px-20">
           <HamburgerMenu />
+          <div className="absolute right-28 md:right-40 top-1/2 -translate-y-1/2 w-80 h-[28rem] md:w-[30rem] md:h-[34rem] pointer-events-none">
+            <img src="homepage-ornament.png?v=4" alt="" className="w-full h-full object-contain opacity-80" />
+          </div>
           <div className="hero-shell mt-12 md:mt-20">
             <div className="hero-copy">
               <HeroTitle />
@@ -1337,12 +1341,15 @@
       return (
         <section id="capabilities" className="relative min-h-screen w-full flex flex-col items-center justify-center py-28 overflow-hidden">
           <div className="relative z-10 w-full max-w-6xl px-8 md:px-16 mx-auto">
-            <SplitHeading text="About me" className="mb-20 text-center" />
+            <SplitHeading text="Myself" className="mb-20 text-center" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {cardsData.map((card, idx) => (
-                <div key={idx} className="glass-card rounded-[var(--radius-lg)] p-10 md:p-14 min-h-[320px] flex flex-col justify-center sa-reveal">
-                  <h3 className="text-4xl md:text-5xl tracking-[-1px] leading-none mb-6" style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', color: '#fff' }}>{card.title}</h3>
-                  <p className="text-white/80 leading-relaxed text-[15px] md:text-[16px]" style={{ fontFamily: "var(--font-body)", fontWeight: 300, lineHeight: 1.7 }}>{card.desc}</p>
+                <div key={idx} className="glass-card rounded-[var(--radius-lg)] p-10 md:p-14 min-h-[320px] flex flex-col justify-center group sa-reveal">
+                  <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[var(--radius-lg)]">
+                    <img src={idx === 1 ? "flower-flipped.png" : "flower-normal.png"} alt="" className="w-full h-full opacity-80 group-hover:opacity-100 transition-opacity duration-600" style={{ objectFit: 'cover', filter: 'brightness(1.5) saturate(0.6)' }} />
+                  </div>
+                  <h3 className="text-4xl md:text-5xl tracking-[-1px] leading-none mb-6 relative z-[1]" style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', color: '#fff' }}>{card.title}</h3>
+                  <p className="text-white/80 leading-relaxed text-[15px] md:text-[16px] relative z-[1]" style={{ fontFamily: "var(--font-body)", fontWeight: 300, lineHeight: 1.7 }}>{card.desc}</p>
                 </div>
               ))}
             </div>
@@ -1405,7 +1412,16 @@
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
               {skillCategories.map((category, idx) => (
-                <div key={idx} className="glass-card rounded-[var(--radius-lg)] p-8 md:p-12 group sa-reveal">
+                    <div key={idx} className="glass-card rounded-[var(--radius-lg)] p-8 md:p-12 min-h-[340px] group sa-reveal" style={{background: 'transparent', backdropFilter: 'none', WebkitBackdropFilter: 'none'}}>
+                    <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[var(--radius-lg)] opacity-[0.5] group-hover:opacity-[0.7] transition-opacity duration-600" style={{
+                        backgroundImage: idx === 0 ? 'url("skill-icon-new2.png?v=1")' : idx === 1 ? 'url("skill-icon-new.png?v=1")' : idx === 2 ? 'url("skill-icon-new2.png?v=1")' : 'url("skill-icon-new.png?v=1")',
+                backgroundSize: 'contain',
+                        backgroundPosition: idx === 0 ? 'top left' : idx === 1 ? '100% 0%' : idx === 2 ? '0 100%' : '100% 100%',
+                        backgroundRepeat: 'no-repeat',
+                        transform: 'none',
+                        maskImage: 'none',
+                        WebkitMaskImage: 'none'
+                    }} />
                   <div className="flex items-center gap-4 mb-8">
                     <div className="w-10 h-px bg-white/15 group-hover:bg-white/40 transition-colors duration-400" />
                     <h3 className="text-2xl md:text-3xl tracking-[-1px]" style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', color: '#fff' }}>{category.title}</h3>
@@ -1447,7 +1463,7 @@
       const projectData = [
         {
           id: "kaizen", name: "KAIZEN", image: "KAIZENL.png",
-          link: "https://kaizen-update.vercel.app/",
+          link: "https://kaizen-update-k09hk5but-cetabubakar77-sources-projects.vercel.app/",
           githubLink: "https://github.com/Shah-Abubakar/PROJECT-KAIZEN",
           isComingSoon: false,
           paragraphs: [
@@ -1626,13 +1642,14 @@
     // ===== CONTACT SECTION =====
     const Contact = () => (
       <section id="contact" className="relative min-h-screen w-full flex items-center justify-center py-28 overflow-hidden">
-        <div className="relative z-10 w-full max-w-xl px-8 md:px-16 mx-auto">
+        <div className="relative z-10 w-full max-w-4xl px-8 md:px-16 mx-auto">
           <div className="mb-16 text-center">
             <SplitHeading text="Contact" />
             <p className="text-base md:text-lg text-white/50 max-w-lg mx-auto sa-reveal" style={{ fontFamily: "var(--font-body)", fontWeight: 300, lineHeight: 1.6 }}>Please consider my application in your great university.</p>
           </div>
-          <div className="glass-card rounded-[var(--radius-lg)] p-8 md:p-12 sa-reveal">
-            <div className="space-y-6">
+          <div className="grid grid-cols-1 gap-6 mx-auto" style={{ maxWidth: '400px' }}>
+            <div className="glass-card rounded-[var(--radius-lg)] sa-reveal relative" style={{ width: '400px', minHeight: '400px' }}>
+              <div className="relative z-[1] space-y-6 p-4">
               <div className="flex items-center gap-4 group">
                 <div className="rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0" style={{ width: '48px', height: '48px' }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: 0.5 }}><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.26.82-.58 0-.287-.01-1.05-.015-2.06-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.082-.73.082-.73 1.205.085 1.838 1.237 1.838 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.123-.3-.535-1.52.117-3.16 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.64.24 2.86.118 3.16.768.84 1.233 1.91 1.233 3.22 0 4.61-2.804 5.62-5.476 5.92.43.37.824 1.102.824 2.22 0 1.602-.015 2.894-.015 3.287 0 .322.216.698.83.578C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
@@ -1672,11 +1689,28 @@
                   <p className="text-white/70 text-[15px]" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>Mumbai, India</p>
                 </div>
               </div>
+              <div className="h-px bg-white/[0.04]" />
+              <div className="flex items-center gap-4 group">
+                <div className="rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0" style={{ width: '48px', height: '48px' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.5)"><circle cx="12" cy="12" r="11" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" fill="none"/><text x="12" y="16" textAnchor="middle" fontSize="14" fontWeight="bold" fill="rgba(255,255,255,0.5)" fontFamily="system-ui">K</text></svg>
+                </div>
+                <div>
+                  <p className="text-white/35 text-[10px] uppercase tracking-[2px] mb-0.5" style={{ fontFamily: "var(--font-ui)", fontWeight: 600 }}>Kaggle</p>
+                  <a href="https://www.kaggle.com/shahabubakar" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white text-[15px] transition-colors" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>kaggle.com/shahabubakar</a>
+                </div>
+              </div>
             </div>
+              <div className="absolute inset-0 pointer-events-none transition-opacity duration-600 opacity-[0.22] z-[2]" style={{
+                backgroundImage: 'url("contacts-ornament.png?v=6")',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }} />
           </div>
-          <div className="mt-16 text-center sa-reveal">
-            <p className="text-white/[0.12] text-[10px] tracking-[4px] uppercase" style={{ fontFamily: "var(--font-ui)", fontWeight: 600 }}>Thank you</p>
-          </div>
+        </div>
+        <div className="mt-16 text-center sa-reveal">
+          <p className="text-white/[0.12] text-[10px] tracking-[4px] uppercase" style={{ fontFamily: "var(--font-ui)", fontWeight: 600 }}>Thank you</p>
+        </div>
         </div>
       </section>
     );
