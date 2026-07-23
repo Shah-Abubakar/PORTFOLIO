@@ -386,6 +386,53 @@
       background: linear-gradient(90deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 100%);
       margin-top: 0.6em;
     }
+    .social-icons-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 1.4em;
+      flex-wrap: wrap;
+      pointer-events: auto;
+    }
+    .social-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.5);
+      transition: all 0.3s ease;
+      position: relative;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    .social-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+    .social-icon:hover {
+      color: var(--accent, #c96442);
+      border-color: var(--accent, #c96442);
+      background: rgba(201, 100, 66, 0.1);
+      transform: translateY(-2px);
+    }
+    .social-icon[data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      font: 11px/1.2 system-ui, sans-serif;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+      pointer-events: none;
+    }
 
     @media (max-width: 900px) {
       .hero-shell {
@@ -964,6 +1011,15 @@
           '-=0.7'
         );
       }
+
+      const icons = document.querySelectorAll('.hero-title .social-icon');
+      if (icons.length) {
+        tl.fromTo(icons,
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out' },
+          '-=0.2'
+        );
+      }
     }
 
     // Initialize all logic
@@ -1109,7 +1165,24 @@
           <div className="hero-line">{renderWord('SHAH')}</div>
           <div className="hero-line">{renderWord('ABUBAKAR')}</div>
           <div className="decorative-line" />
-        </div>
+          <div className="social-icons-row">
+            <a href="https://github.com/Shah-Abubakar/Shah-Abubakar" target="_blank" rel="noopener noreferrer" className="social-icon" data-tooltip="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            </a>
+            <a href="https://www.kaggle.com/shahabubakar" target="_blank" rel="noopener noreferrer" className="social-icon" data-tooltip="Kaggle">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.825 23.859c-.175.141-.35.199-.525.199h-4.23c-.175 0-.367-.058-.575-.199l-4.85-6.451-1.85 1.35v4.8c0 .35-.117.525-.35.525H4.003c-.233 0-.35-.175-.35-.525V.533c0-.233.117-.35.35-.35h2.442c.233 0 .35.117.35.35v12.649l5.7-5.725c.175-.175.385-.291.625-.35.058 0 .117-.008.175-.008h2.983c.117 0 .217.025.3.075.083.05.125.117.125.2 0 .067-.033.133-.1.2l-5.825 5.501 6.35 8.625c.083.117.125.233.125.35 0 .15-.05.275-.15.375z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/shah-abubakar-a9a0033a8/" target="_blank" rel="noopener noreferrer" className="social-icon" data-tooltip="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="https://x.com/N0T_ABUBAKAR" target="_blank" rel="noopener noreferrer" className="social-icon" data-tooltip="X">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://huggingface.co/KA1ZEN77" target="_blank" rel="noopener noreferrer" className="social-icon" data-tooltip="Hugging Face">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.553 9.932c.246-.36.522-.628.828-.803a2.44 2.44 0 0 1 .358-.181c-.098.355-.152.727-.152 1.108 0 .38.054.752.152 1.107a2.44 2.44 0 0 1-.358-.18 2.848 2.848 0 0 1-.828-.804c-.25-.364-.427-.765-.534-1.23a5.37 5.37 0 0 0 0-1.786c.107-.465.284-.866.534-1.23zm12.894 0c.246.364.427.765.534 1.23a5.37 5.37 0 0 1 0 1.786c-.107.465-.284.866-.534 1.23-.246.36-.522.628-.828.803a2.44 2.44 0 0 1-.358.181c.098-.355.152-.727.152-1.108a4.87 4.87 0 0 0-.152-1.107c.13.058.25.12.358.18.306.176.582.444.828.804zM12 11.38a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6zm0-7.888c-4.418 0-8 3.582-8 8a7.978 7.978 0 0 0 1.062 3.944l-1.065 3.602 3.61-1.062A7.978 7.978 0 0 0 12 19.38c4.418 0 8-3.582 8-8s-3.582-8-8-8zm0 14.762c-.61 0-1.204-.08-1.77-.232l-1.189.35.35-1.188A6.89 6.89 0 0 1 5.107 12c0-3.807 3.086-6.892 6.893-6.892s6.893 3.085 6.893 6.892-3.086 6.892-6.893 6.892z"/></svg>
+            </a>
+          </div>
+          </div>
       );
     };
 
@@ -1481,14 +1554,14 @@
         {
           id: "nextstep", name: "NextSTEP", image: "NS1.png",
           link: "https://indian-academic-pathways-main.vercel.app/",
-          githubLink: "https://github.com/Shah-Abubakar/PROJECT-KAIZEN",
+          githubLink: "https://github.com/Shah-Abubakar/NextSTEP",
           isComingSoon: false,
           paragraphs: ["NextStep is an academic and career guidance platform built to help Indian students figure out their next steps with total clarity. It brings together everything a student needs—like national and international scholarships, career options, entrance exam details, and top college lists all in one simple, easy-to-use place. I actually made this project about 1.5 years ago, and it serves as the earlier version of what has now evolved into Project Kaizen. It's designed to save students from endless searching by giving them a clear path, helpful study tools, and a better way to look for future opportunities. I have stopped working on it for now."]
         },
         {
           id: "Horizon", name: "HORIZON", image: "Blackhole Logo.png",
           link: "https://smartups.vercel.app/",
-          githubLink: "https://github.com/Shah-Abubakar/PROJECT-KAIZEN",
+          githubLink: "https://github.com/Shah-Abubakar/HORIZON",
           isComingSoon: false,
           paragraphs: ["HIRE ME is a personal portfolio website I originally built to launch my freelancing work on Fiverr. It's designed as a clean, impactful space to showcase creative ideas, disciplined strategy, and what I can bring to the table as a student with big ambitions. The whole project is about curiosity-driven exploration—taking a simple question and turning it into a real, innovative outcome through deep research and solid design execution. Even though I didn't end up uploading it because I shifted my focus to working on Project Kaizen, it stands as a major piece of my project history and design journey."]
         },
@@ -1647,9 +1720,9 @@
             <SplitHeading text="Contact" />
             <p className="text-base md:text-lg text-white/50 max-w-lg mx-auto sa-reveal" style={{ fontFamily: "var(--font-body)", fontWeight: 300, lineHeight: 1.6 }}>Please consider my application in your great university.</p>
           </div>
-          <div className="grid grid-cols-1 gap-6 mx-auto" style={{ maxWidth: '400px' }}>
-            <div className="glass-card rounded-[var(--radius-lg)] sa-reveal relative" style={{ width: '400px', minHeight: '400px' }}>
-              <div className="relative z-[1] space-y-6 p-4">
+          <div className="flex justify-center">
+            <div className="glass-card rounded-[var(--radius-lg)] sa-reveal relative w-full" style={{ maxWidth: '420px', minHeight: '380px' }}>
+              <div className="relative z-[1] space-y-5 p-5 md:p-6">
               <div className="flex items-center gap-4 group">
                 <div className="rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0" style={{ width: '48px', height: '48px' }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style={{ opacity: 0.5 }}><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.26.82-.58 0-.287-.01-1.05-.015-2.06-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.082-.73.082-.73 1.205.085 1.838 1.237 1.838 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.123-.3-.535-1.52.117-3.16 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.29-1.552 3.297-1.23 3.297-1.23.653 1.64.24 2.86.118 3.16.768.84 1.233 1.91 1.233 3.22 0 4.61-2.804 5.62-5.476 5.92.43.37.824 1.102.824 2.22 0 1.602-.015 2.894-.015 3.287 0 .322.216.698.83.578C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
@@ -1666,7 +1739,7 @@
                 </div>
                 <div>
                   <p className="text-white/35 text-[10px] uppercase tracking-[2px] mb-0.5" style={{ fontFamily: "var(--font-ui)", fontWeight: 600 }}>Email</p>
-                  <a href="mailto:cet.abubakar.77@gmail.com" className="text-white/70 hover:text-white text-[15px] transition-colors" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>cet.abubakar.77@gmail.com</a>
+                  <a href="mailto:cet.abubakar77@gmail.com" className="text-white/70 hover:text-white text-[15px] transition-colors" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>cet.abubakar77@gmail.com</a>
                 </div>
               </div>
               <div className="h-px bg-white/[0.04]" />
@@ -1690,15 +1763,6 @@
                 </div>
               </div>
               <div className="h-px bg-white/[0.04]" />
-              <div className="flex items-center gap-4 group">
-                <div className="rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0" style={{ width: '48px', height: '48px' }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="rgba(255,255,255,0.5)"><circle cx="12" cy="12" r="11" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" fill="none"/><text x="12" y="16" textAnchor="middle" fontSize="14" fontWeight="bold" fill="rgba(255,255,255,0.5)" fontFamily="system-ui">K</text></svg>
-                </div>
-                <div>
-                  <p className="text-white/35 text-[10px] uppercase tracking-[2px] mb-0.5" style={{ fontFamily: "var(--font-ui)", fontWeight: 600 }}>Kaggle</p>
-                  <a href="https://www.kaggle.com/shahabubakar" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white text-[15px] transition-colors" style={{ fontFamily: "var(--font-body)", fontWeight: 300 }}>kaggle.com/shahabubakar</a>
-                </div>
-              </div>
             </div>
               <div className="absolute inset-0 pointer-events-none transition-opacity duration-600 opacity-[0.22] z-[2]" style={{
                 backgroundImage: 'url("contacts-ornament.png?v=6")',
